@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  postgres-docker:
+    image: postgres
+    container_name: postgres-docker
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpassword
+      - POSTGRES_DB=ecommerce-dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+    networks:
+      - shared-network
+    restart: on-failure
+
+  adminer:
+    image: adminer
+    container_name: adminer-docker
+    depends_on:
+      - postgres-docker
+    ports:
+      - "8080:8080"
+    networks:
+      - shared-network
+    restart: on-failure
+
+  ecommerce-demo-docker:
+    depends_on:
+      - postgres-docker
+    links:
+      - postgres-docker
+    environment:
+      - NODE_ENV=development
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/usr/src/app
+    container_name: ecommerce-demo
+    expose:
+      - "3001"
+    ports:
+      - "3001:3001"
+    command: npm run dev
+    networks:
+      - shared-network
+    restart: on-failure
+
+volumes:
+  postgres-data:
+
+networks:
+  shared-network:
+    driver: bridge
