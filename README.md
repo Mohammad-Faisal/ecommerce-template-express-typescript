@@ -9,7 +9,7 @@ docker run --name postgresql -e POSTGRES_USER=testdb -e POSTGRES_PASSWORD=testpa
 And change the `.env` file to connect to the local database
 
 ```sh
-PORT = 5000
+PORT = 3001
 DB_TYPE = postgres
 DB_URL = localhost
 DB_PORT = 5432
@@ -25,6 +25,8 @@ Then run the following command.
 ```sh
 docker-compose up
 ```
+
+You should be able to access the server at localhost:3001
 
 # Step 2
 
